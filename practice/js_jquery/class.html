@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>类选择器</title>
+	<script src="class.js"></script>
+	<style>
+		.aa {
+			width: 200px;
+			height: 200px;
+			background: #eee;
+		}
+		.bb {
+			width: 300px;
+			height: 400px;
+			background: pink;
+		}
+	</style>
+</head>
+<body>
+	<div class="aa">我是aa</div>
+	<div class="bb">我是bb</div>
+	<script>
+		var a = getElementsByClass('aa')
+		console.log(a);
+		a[0].click = function() {
+			alert('找到了')
+		}
+	</script>
+</body>
+</html>

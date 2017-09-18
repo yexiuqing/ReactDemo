@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+  #div1{
+    width: 400px;
+    height: 500px;
+    background: #eee;
+  }
+  .aa,
+  .bb,
+  .cc {
+    width: 400px;
+    height: 100px;
+  }
+  .aa {
+    background: blue;
+  }
+  .bb {
+    background: pink;
+  }
+  .cc {
+    background: yellow;
+  }
+</style>
+</head>
+<body>
+  <div id="div1">
+    <div class="aa-bb"></div>
+    <div class="bb"></div>
+    <div class="bb"></div>
+  </div>
+  <script>
+    console.log(getClass('bb'))
+    console.log(getByClass('bb'))
+    // 类选择器1
+    // 缺陷是aa-bb也会被选中
+    function getClass (clsName, context) {
+      var result = []
+      context = context || document
+      var arr = context.getElementsByTagName('*')
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i].className.indexOf(clsName) !== -1) {
+          result.push(arr[i])
+        }
+      }
+      return result
+    }
+    // 类选择器2
+    function getByClass (sClass, oParent) {
+      // 高级浏览器支持getElementsByClassName直接使用
+      oParent = oParent || document
+      if (oParent.getElementsByClassName) {
+        return oParent.getElementsByClassName(sClass)
+      } else {
+          // 不支持需要选中所有标签的类名来选取
+        var res = []
+        var aAll = oParent.getElementsByTagName('*')
+        for (var i = 0; i < aAll.length; i++) {
+            // 选中标签的全部类名是个str='btn on red'=aAll[i].className   使用正则  reg=/\b sClass \b/g
+          var reg = new RegExp('\\b' + sClass + '\\b', 'g')
+          if (reg.test(aAll[i].className)) {
+            res.push(aAll[i])
+          }
+        }
+        return res
+      }
+    }
+    // 把类数组对象变成真正的数组，后面复合选择器会用到，不是作业要求的
+    function toArray (obj) {
+      var arr = []
+      for (var i = 0; i < obj.length; i++) {
+        arr.push(obj[i])
+      }
+      return arr
+    }
+    // 判断数组中是否存在某个元素，后面复合选择器会用到，不是作业要求的
+    function isElementInArrayv(arr, ele) {
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i] === ele) {
+          return true
+        }
+      }
+      return false
+    }
+    function complexSelector(selector) {
+      if (trim(selector).split(' ').length > 1) {
+        var all = trim(selector).split(' ')
+        var root = $(all[all.length-1])
+        if (!root.length) {
+          return root
+        }
+        if(!isArray(root)){
+            root = toArray(root);
+        }
+        for(var i = 2 ; i < all.length+2 && all.length-i >=0 ; i++){
+            root = fliterByParent(root,all[all.length-i]);
+        }
+        return root;
+    }
+    }
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

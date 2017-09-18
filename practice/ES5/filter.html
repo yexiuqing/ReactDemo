@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>filter过滤</title>
+</head>
+<body>
+
+	<script type="text/javascript">
+		// filter 返回过滤后的新数组
+		// filter 的callback函数需要返回true或false
+		var data = [ 0, 0, 0];		//带入输出[]
+		var data1 =[0, 1, 2, 3, 5]   	//带入输出[1, 2, 3, 5] 
+		var arrayFilter = data.filter( function (item) {
+			return item;
+		});
+		console.log(arrayFilter);
+	</script>
+</body>
+</html>

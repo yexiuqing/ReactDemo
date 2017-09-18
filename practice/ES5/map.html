@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<script type="text/javascript">
+		var users = [
+			{name: "zhangsan", "email": "zhangsan@email.com"},
+			{name: "lisi", "email": "lisi@email.com"},
+			{name: "wangwu", "email": "wangwu@email.com"},
+		];
+		var emails = users.map(function (user){
+			return user.email;
+		})
+		console.log(emails.join(" , "));
+		
+
+
+		var data = emails.filter(function(email){
+			return /^zhang/.test(email);
+		});
+		console.log(data.join(" , "));
+		
+		
+	</script>
+</body>
+</html>

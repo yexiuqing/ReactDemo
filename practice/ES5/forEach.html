@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<script type="text/javascript">
+		//forEach方法中的function支持三个参数
+		// 1/遍历的数组内容 2/对应的数组索引 3/数组本身
+
+		//实例1
+		var sum = 0 ;
+		var arr=[1,2,3,4];
+		arr.forEach(console.log);
+		arr.forEach(function(item, index,array){
+			// console.log(array[index]);
+			// console.log(item);
+			console.log(array[index]==item);
+			sum +=item;
+		})
+		alert(sum);
+
+		//实例2
+		var database = {
+			users:["zhangsan", "lisi", "wangwu"],
+			sendEmail: function(user) {
+				if(this.isValidUser(user)){
+					console.log("hello ," + user);
+				} else {
+					console.log("sorroy ," + user + "you don't have right");
+				}
+			},
+			isValidUser: function(user){
+				return /^z/.test(user);
+			}
+		};
+		database.users.forEach(		//database.users中人遍历
+			database.sendEmail,		//发送邮件
+			database				//使用database代替this.isValidUser中的this
+		)
+
+		//实例3 特殊性
+		var arr=[1, 2, 3];
+		delete arr[1];
+		console.log("数组为："+arr);
+		console.log("数组长度为：" +arr.length)   //length依旧是3
+		arr.forEach(console.log);
+
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<p id="result"></p>
+	<script type="text/javascript">
+		//some意指“某些”，指是否“某些项”合乎条件。与下面的every算是好基友，every表示是否“每一项”都要靠谱。
+		//some要求至少有1个值让callback返回true就可以了。显然，8 > 7，因此scores.some(higherThanCurrent)值为true.我们自然可以使用forEach进行判断，不过，相比some, 不足在于，some只有有true即返回不再执行了。
+
+		// var arrs = [4, 5, 11, 9, 14];
+		// var current = 10;
+		// function heightThanCurrent (arr) {
+		// 	// console.log(arr);
+		// 	return arr > current;
+		// }
+		// if(arrs.some(heightThanCurrent)) {
+		// 	console.log("朕准了");
+		// }
+
+		//兼容模式处理
+		//创建空console对象，避免JS报错  
+		var eleResult =  document.getElementById("result");
+		if(!window.console) { window.console = {}; }
+		console.log = function(result) {
+			var text = document.createTextNode(result),
+			br = document.createElement("br");
+			eleResult.appendChild(text);
+			eleResult.appendChild(br);
+		};
+		if(typeof Array.prototype.some != "function") {
+			Array.prototype.some = function (fn, context) {
+				var passed = false;
+				if(typeof fn === "function") {
+					for(var k =0, length = this.length; k < length ;k++) {
+						if(passed ===true) break;
+						passed = !!fn.call(context, this[k], k, this)
+					}
+				}
+				return passed;
+			}
+		}
+
+		var scores = [5, 8, 3, 10];
+		var current = 7;
+
+		function heightThanCurrent(score) {
+			return score > current;
+		}
+		if(scores.some(heightThanCurrent)) {
+			console.log("朕准了！");
+		} else {
+			console.log("拖出去，斩了！")
+		}
+	</script>
+</body>
+</html>

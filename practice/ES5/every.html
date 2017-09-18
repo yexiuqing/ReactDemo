@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<script type="text/javascript">
+		//every是需要每个元素都满足，都是true，反则不满足条件
+		var arrs = [4, 5, 11, 9, 14];
+		var current = 10;
+		function heightThanCurrent (arr) {
+			// console.log(arr);
+			return arr > current;
+		}
+		if(arrs.every(heightThanCurrent)) {
+			console.log("朕准了");
+		} else{
+			console.log("拖出去斩了！")
+		}
+	</script>
+</body>
+</html>
