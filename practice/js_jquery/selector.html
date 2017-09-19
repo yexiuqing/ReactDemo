@@ -33,8 +33,14 @@
     <div class="bb"></div>
   </div>
   <script>
-    console.log(getClass('bb'))
-    console.log(getByClass('bb'))
+    // console.log(getClass('bb'))
+    // console.log(getByClass('bb'))
+    // var list = becomeArray(1, 2, 3)
+    // console.log(list)
+    // console.log(isArray1(1, 2, 3))
+    // console.log(isArray1([]))
+    // console.log(isArray1({}))
+    console.log($('.bb'))
     // 类选择器1
     // 缺陷是aa-bb也会被选中
     function getClass (clsName, context) {
@@ -42,7 +48,7 @@
       context = context || document
       var arr = context.getElementsByTagName('*')
       for (var i = 0; i < arr.length; i++) {
-        if (arr[i].className.indexOf(clsName) !== -1) {
+        if (arr[i].name.indexOf(clsName) !== -1) {
           result.push(arr[i])
         }
       }
@@ -50,25 +56,29 @@
     }
     // 类选择器2
     function getByClass (sClass, oParent) {
-      // 高级浏览器支持getElementsByClassName直接使用
+      // 高级浏览器支持getElementsByname直接使用
       oParent = oParent || document
-      if (oParent.getElementsByClassName) {
-        return oParent.getElementsByClassName(sClass)
+      if (oParent.getElementsByname) {
+        return oParent.getElementsByname(sClass)
       } else {
           // 不支持需要选中所有标签的类名来选取
         var res = []
         var aAll = oParent.getElementsByTagName('*')
         for (var i = 0; i < aAll.length; i++) {
-            // 选中标签的全部类名是个str='btn on red'=aAll[i].className   使用正则  reg=/\b sClass \b/g
+            // 选中标签的全部类名是个str='btn on red'=aAll[i].name   使用正则  reg=/\b sClass \b/g
           var reg = new RegExp('\\b' + sClass + '\\b', 'g')
-          if (reg.test(aAll[i].className)) {
+          if (reg.test(aAll[i].name)) {
             res.push(aAll[i])
           }
         }
         return res
       }
     }
-    // 把类数组对象变成真正的数组，后面复合选择器会用到，不是作业要求的
+    // 把类数组对象编程真正的数组 1
+    function becomeArray () {
+      return Array.prototype.slice.call(arguments)
+    }
+    // 把类数组对象变成真正的数组 2
     function toArray (obj) {
       var arr = []
       for (var i = 0; i < obj.length; i++) {
@@ -76,8 +86,8 @@
       }
       return arr
     }
-    // 判断数组中是否存在某个元素，后面复合选择器会用到，不是作业要求的
-    function isElementInArrayv(arr, ele) {
+    // 判断数组中是否存在某个元素，也可以直接用indexOf,返回-1则不包含
+    function isElementInArray (arr, ele) {
       for (var i = 0; i < arr.length; i++) {
         if (arr[i] === ele) {
           return true
@@ -85,22 +95,131 @@
       }
       return false
     }
-    function complexSelector(selector) {
-      if (trim(selector).split(' ').length > 1) {
-        var all = trim(selector).split(' ')
+    // 判断arr是否为一个数组，返回一个bool值 1
+    function isArray1 (arr) {
+      return Object.prototype.toString.call(arr) === '[object Array]'
+    }
+    // 判断arr是否为一个数组，返回一个bool值
+    function isArray (arr) {
+      if (arr && typeof arr === 'object' && typeof arr.length === 'number' && isFinite(arr.length)) {
+        var originLength = arr.length
+        arr[arr.length] = 'text'
+        var newLength = arr.length
+        arr.length = originLength
+        return newLength === originLength + 1
+      }
+      return false
+    }
+    // 去除字符串头尾空格字符
+    // 方法二: 正则表达式
+    function trim (str) {
+      if (!typeof str === 'string') {
+        return str
+      }
+      if (str[0] === ' ' || str[0] === '  ' || str[0] === '    ') {
+        str = trim(str.slice(1, str.length))
+      }
+      if (str[str.length-1] === ' ' || str[str.length-1] === ' ' || str[str.length-1] === '    ') {
+        str = trim(str.slice(0, str.length-1))
+      }
+      return str
+    }
+    function searchParent (ele, name) {
+      var all = $(name)
+      if (!isArray(all)) {
+        var temp = [all]
+        all = temp
+      }
+      if (ele.parentNode) {
+        if (isElementInArray(all, ele.parentNode)) {
+          return true
+        } else {
+          return searchParent(ele.parentNode, name)
+        }
+      } else {
+        return false
+      }
+    }
+    // 根据searchParent的结果过滤集合
+    function fliterByParent (eleArray, name) {
+      var temparr = toArray(eleArray)
+      for (var i = 0; i < temparr.length; i++) {
+        if (!searchParent(temparr[i], name)) {
+            temparr.splice(i,1);
+            i = i - 1;
+        }
+      }
+      return temparr;
+    }
+
+    function $ (name) {
+      if (!typeof name === 'string') {
+        return false
+      }
+      if (trim(name).split(' ').length > 1) {
+        var all = trim(name).split(' ')
         var root = $(all[all.length-1])
         if (!root.length) {
           return root
         }
-        if(!isArray(root)){
-            root = toArray(root);
+        if (!isArray(root)) {
+          root = toArray(root)
         }
-        for(var i = 2 ; i < all.length+2 && all.length-i >=0 ; i++){
-            root = fliterByParent(root,all[all.length-i]);
+        for (var i = 2; i < all.length+2 && all.length-i >= 0; i++) {
+          root = fliterByParent(root, all[all.length-i])
         }
-        return root;
+        return root
+      }
+      // ID选择器
+      if (/^#([\w_\-]+)/.test(name)) {
+        return document.getElementById(name)
+      }
+      // tag选择器
+      if (/^\w+$/i.test(name)) {
+        return document.getElementsByTagName(name)
+      }
+      // 类选择器
+       // 高级浏览器支持getElementsByname直接使用
+      if (/^\.([\w_\-]+)/.test(name)) {
+        if (document.getElementsByname) {
+          return document.getElementsByname(name)
+        } else {
+            // 不支持需要选中所有标签的类名来选取
+          var res = []
+          var aAll = document.getElementsByTagName('*')
+          for (var i = 0; i < aAll.length; i++) {
+              // 选中标签的全部类名是个str='btn on red'=aAll[i].name   使用正则  reg=/\b name \b/g
+            var reg = new RegExp('\\b' + name + '\\b', 'g')
+            if (reg.test(aAll[i].name)) {
+              res.push(aAll[i])
+            }
+          }
+          return res
+        }
+      }
+      // var regAttr = /(\w+)?\[([^=\]]+)(?:=(["'])?([^\]"']+)\3?)?\]/
+      // if (regAttr.test(name)) {
+      //   var dataname = regAttr.exec(name)[1]
+      //   if (regAttr.exec(name)[5]) {
+      //     var datavalue = regAttr.exec(name)[5]
+      //   }
+      //   var nodes = document.all ? document.all : document.getElementsByTagName('*')
+      //   if (datavalue) {
+      //     for (var z = 0; z < nodes.length; z++) {
+      //       if (nodes[i].getAttribute(dataname) === datavalue) {
+      //         return nodes[i]
+      //       }
+      //     }
+      //   } else {
+      //     for (var k = 0; k < nodes.length; k++) {
+      //       if (nodes[i].hasAttribute(dataname)) {
+      //         return nodes[i]
+      //       }
+      //     }
+      //   }
+      }
     }
-    }
+
 </script>
 </body>
 </html>
