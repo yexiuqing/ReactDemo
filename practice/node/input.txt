@@ -1,6 +1,1 @@
-yesterday is gone ！
-today is a new day !
-tomorrow is a new day!
-aaaaaaaaaaaaaaaa
-sssssssssssssss
-ddddddddddddd
+我是通过写入的文件内容！
